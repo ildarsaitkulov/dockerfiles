@@ -1,0 +1,14 @@
+FROM php:7.4-cli
+
+RUN ln -fs /usr/share/zoneinfo/Europe/Moscow /etc/localtime && \
+    echo "Europe/Moscow" > /etc/timezone
+
+RUN apt-get update && apt install -y git
+
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/install-php-extensions && install-php-extensions mongodb-1.12.1 amqp apcu bcmath curl gd gender igbinary intl json mbstring memcached msgpack opcache readline ssh2 tidy xml zip pcntl sockets
+
+ADD ./custom-config.ini /usr/local/etc/php/conf.d/custom-config.ini
+
+CMD php -r "phpinfo();"
